@@ -1,0 +1,7 @@
+.lg-thumb-item:hover,
+.lg-thumb-item.active {
+    border-color: #428f3d !important;
+}
+.lg-thumb-item {
+    border-color: #ccc !important;
+}

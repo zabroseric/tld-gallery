@@ -62,7 +62,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "deploy": "scp -r build root@159.65.236.80:/var/www/totallookdesign/wordpress/gallery"
+    "deploy": "scp -pr build/gallery-assets/* root@159.65.236.80:/var/www/totallookdesign/wordpress/gallery-assets/",
+    "build-deploy": "npm run build && npm run deploy"
   },
   "eslintConfig": {
     "extends": [

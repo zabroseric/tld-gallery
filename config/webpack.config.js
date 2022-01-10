@@ -110,7 +110,7 @@ module.exports = function (webpackEnv) {
       isEnvDevelopment && require.resolve('style-loader'),
       isEnvProduction && {
         loader: MiniCssExtractPlugin.loader,
-        // css is located in `css`, use '../../' to locate index.html folder
+        // css is located in `static/css`, use '../../' to locate index.html folder
         // in production `paths.publicUrlOrPath` can be a relative path
         options: paths.publicUrlOrPath.startsWith('.')
           ? { publicPath: '../../' }
@@ -207,13 +207,13 @@ module.exports = function (webpackEnv) {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        ? 'js/[name].js'
-        : isEnvDevelopment && 'js/bundle.js',
+        ? 'gallery-assets/js/[name].js'
+        : isEnvDevelopment && 'gallery-assets/js/bundle.js',
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
-        ? 'js/[name].chunk.js'
-        : isEnvDevelopment && 'js/[name].chunk.js',
-      assetModuleFilename: 'media/[name].[ext]',
+        ? 'gallery-assets/js/[name].chunk.js'
+        : isEnvDevelopment && 'gallery-assets/js/[name].chunk.js',
+      assetModuleFilename: 'gallery-assets/media/[name][ext]',
       // webpack uses `publicPath` to determine where the app is being served from.
       // It requires a trailing slash, or the file assets will get an incorrect path.
       // We inferred the "public path" (such as / or /my-project) from homepage.
@@ -391,7 +391,7 @@ module.exports = function (webpackEnv) {
                 {
                   loader: require.resolve('file-loader'),
                   options: {
-                    name: 'media/[name].[hash].[ext]',
+                    name: 'gallery-assets/media/[name].[ext]',
                   },
                 },
               ],
@@ -417,7 +417,7 @@ module.exports = function (webpackEnv) {
                     },
                   ],
                 ],
-                
+
                 plugins: [
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
@@ -451,7 +451,7 @@ module.exports = function (webpackEnv) {
                 cacheDirectory: true,
                 // See #6846 for context on why cacheCompression is disabled
                 cacheCompression: false,
-                
+
                 // Babel sourcemaps are needed for debugging into node_modules
                 // code.  Without the options below, debuggers like VSCode
                 // show incorrect code and set breakpoints on the wrong lines.
@@ -623,8 +623,8 @@ module.exports = function (webpackEnv) {
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
           // both options are optional
-          filename: 'css/[name].css',
-          chunkFilename: 'css/[name].chunk.css',
+          filename: 'gallery-assets/css/[name].css',
+          chunkFilename: 'gallery-assets/css/[name].chunk.css',
         }),
       // Generate an asset manifest file with the following content:
       // - "files" key: Mapping of all asset filenames to their corresponding
