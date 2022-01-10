@@ -7,7 +7,7 @@ const StyledPlus = styled.div`
   display: inline-block;
 `;
 
-const Plus = ({size}) => (
+const PlusIcon = ({size}) => (
   <StyledPlus size={size}>
     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search-plus" role="img" xmlns="http://www.w3.org/2000/svg"
          viewBox="0 0 512 512">
@@ -17,4 +17,4 @@ const Plus = ({size}) => (
   </StyledPlus>
 );
 
-export default Plus;
+export default PlusIcon;

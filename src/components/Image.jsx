@@ -1,6 +1,5 @@
-import React from 'react';
 import styled from "styled-components";
-import Plus from "./icons/plus";
+import PlusIcon from "./Plus";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
@@ -140,7 +139,7 @@ const Image = ({title, caption, src, srcPreview}) => {
       <ContentContainer>
         <ContentContainerInner>
           <PlusContainer>
-            <Plus size={36}/>
+            <PlusIcon size={36}/>
           </PlusContainer>
           <Title>
             {title.split(' ').map((word, index) => index % 2 === 0 ?

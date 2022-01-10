@@ -1,6 +1,6 @@
-import {getGallery} from "./Request";
+import {getGallery} from "../services/Request";
 import {useEffect, useState} from "react";
-import Image from "./Image";
+import Image from "../components/Image";
 import styled from "styled-components";
 import { LightgalleryProvider } from "react-lightgallery";
 import { LightgalleryItem } from "react-lightgallery";
