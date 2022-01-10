@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import PlusIcon from "./Plus";
+import PlusIcon from "./PlusIcon";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
