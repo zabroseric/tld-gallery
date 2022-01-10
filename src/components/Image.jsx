@@ -6,6 +6,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 const StyledLazyLoadImage = styled(LazyLoadImage)`
   opacity: 0.9;
   vertical-align: top;
+  transition: opacity 0.5s;
   
   @media (min-width: 992px) {
     height: 317px;

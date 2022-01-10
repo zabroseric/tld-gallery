@@ -4,11 +4,14 @@ import Image from "../components/Image";
 import styled from "styled-components";
 import { LightgalleryProvider } from "react-lightgallery";
 import { LightgalleryItem } from "react-lightgallery";
+import {isDev} from "../services/Utils";
 
 const StyledApp = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  margin-right: -5px;
+  margin-left: -5px;
 `;
 
 const StyleImage = styled.div`
@@ -23,7 +26,8 @@ const StyledImageInner = styled.div`
   margin-top: 10px;
   
   @media (min-width: 576px) {
-    margin-left: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
   }
 `;
 
@@ -32,9 +36,7 @@ function App() {
   const [filter, setFilter] = useState('Landscape Designs');
 
   const preloadImages = async () => {
-    if ( window.location.hostname === 'localhost' ) {
-      return;
-    }
+    if ( isDev() ) { return; }
 
     for ( let i = 0; i < gallery.length; i++ ) {
       console.log(`Loading image ${i+1} of ${gallery.length}`);
@@ -79,6 +81,7 @@ function App() {
                 <LightgalleryItem
                   src={gallery.srcFullScreen}
                   thumb={gallery.srcPreview}
+                  group="any"
                 >
                   <Image
                     title={gallery.title}

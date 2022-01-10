@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './containers/App';
 import "lightgallery.js/dist/css/lightgallery.css";
+import {isDev} from "./services/Utils";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -12,7 +13,7 @@ ReactDOM.render(
 );
 
 const cssId = 'gallery-css';
-if (!document.getElementById(cssId) && window.location.hostname !== 'localhost') {
+if (!document.getElementById(cssId) && !isDev()) {
   const head  = document.getElementsByTagName('head')[0];
   const link  = document.createElement('link');
   link.id   = cssId;
