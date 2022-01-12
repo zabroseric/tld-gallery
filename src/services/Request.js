@@ -1,4 +1,4 @@
-import {galleryUrl} from "../constants";
+import {galleryApi} from "../constants";
 
 /**
  * Make a request to the gallery and organises them by tag name.
@@ -7,7 +7,7 @@ import {galleryUrl} from "../constants";
  * @returns {Promise<>}
  */
 export const getGallery = async () => {
-  const gallery = await (await fetch(galleryUrl)).json();
+  const gallery = await (await fetch(galleryApi)).json();
   return Object.assign({}, ...getGalleryTags().map(tag => ({
     [tag]: gallery.filter(galleryItem => galleryItem.tags.includes(tag))
   })));

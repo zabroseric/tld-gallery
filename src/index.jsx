@@ -3,8 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './containers/App';
 import "lightgallery.js/dist/css/lightgallery.css";
-import {isDev} from "./services/Utils";
+import {insertCssLink, isDev} from "./services/Utils";
 import {HashRouter} from "react-router-dom";
+import {cssHref} from "./constants";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -15,14 +16,5 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-const cssId = 'images-css';
-if (!document.getElementById(cssId) && !isDev()) {
-  const head  = document.getElementsByTagName('head')[0];
-  const link  = document.createElement('link');
-  link.id   = cssId;
-  link.rel  = 'stylesheet';
-  link.type = 'text/css';
-  link.href = '/images-assets/css/main.css';
-  link.media = 'all';
-  head.appendChild(link);
-}
+// Load the relevant css file into the page.
+if ( !isDev()) { insertCssLink('gallery-css', cssHref); }

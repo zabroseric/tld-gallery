@@ -21,10 +21,31 @@ export const preloadImages = async (gallerySingle, size, timeout = 0) => {
   await sleep(timeout);
   console.log(`Attempting to load ${gallerySingle.length} images of size ${size}.`);
 
-  if (isDev()) { return; }
+  if (isDev()) {
+    return;
+  }
   const preloadFetches = [];
   for (let i = 0; i < gallerySingle.length; i++) {
     preloadFetches.push(fetch(gallerySingle[i][size]));
   }
   return Promise.allSettled(preloadFetches);
+}
+
+/**
+ * Insert a css link into the head of the body to be loaded.
+ *
+ * @param id
+ * @param href
+ */
+export const insertCssLink = (id, href) => {
+  if (!document.getElementById(id)) {
+    const head = document.getElementsByTagName('head')[0];
+    const link = document.createElement('link');
+    link.id = id;
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = href;
+    link.media = 'all';
+    head.appendChild(link);
+  }
 }
