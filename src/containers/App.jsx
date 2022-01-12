@@ -1,99 +1,83 @@
-import {getGallery, sleep} from "../services/Request";
+import {getGallery, getGalleryTags} from "../services/Request";
 import {useEffect, useState} from "react";
-import Image from "../components/Image";
 import styled from "styled-components";
-import { LightgalleryProvider } from "react-lightgallery";
-import { LightgalleryItem } from "react-lightgallery";
-import {isDev} from "../services/Utils";
+import {preloadImages} from "../services/Utils";
+import {Redirect, Route, useHistory} from "react-router-dom";
+import {AnimatedSwitch, spring} from 'react-router-transition';
+import Gallery from "./Gallery";
+import {galleryPreloadTimeout} from "../constants";
 
 const StyledApp = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-right: -5px;
-  margin-left: -5px;
-`;
-
-const StyleImage = styled.div`
-  width: 100%;
-  
-  @media (min-width: 576px) {
-    width: 50%;
-  }
-`;
-
-const StyledImageInner = styled.div`
-  margin-top: 10px;
-  
-  @media (min-width: 576px) {
-    margin-right: 5px;
-    margin-left: 5px;
-  }
 `;
 
 function App() {
   const [gallery, setGallery] = useState([]);
-  const [filter, setFilter] = useState('Landscape Designs');
+  const history = useHistory();
 
-  const preloadImages = async () => {
-    if ( isDev() ) { return; }
+  const getFilter = () => history.location.pathname.replace('/', '');
+  const getGalleryCurrent = () => gallery[getFilter()];
+  const getGalleryAll = () => [].concat.apply([], Object.values(gallery));
 
-    for ( let i = 0; i < gallery.length; i++ ) {
-      console.log(`Loading image ${i+1} of ${gallery.length}`);
-      try {
-        await fetch(gallery[i].srcFullScreen);
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        await sleep(200);
-      }
-    }
-  }
 
   useEffect(() => {
-    getGallery().then((data) => setGallery(data));
+    getGallery()
+      .then(data => setGallery(data))
+      .catch(e => console.warn(e));
 
     // Listen to the tabs when clicked.
     const tabs = document.getElementsByClassName('fusion-tabs')[0].getElementsByClassName('tab-link');
     Array.from(tabs).forEach((element) => {
-      element.addEventListener('click', (e) =>
-        setFilter(JSON.stringify(e.target.textContent.replace(/\s+/, ' '))));
+      element.addEventListener('click', (e) => {
+        history.push('/' + e.target.textContent.replace(/\s+/, '-').toLowerCase());
+        e.preventDefault();
+      });
+
     });
   }, []);
 
+  useEffect(() => {
+    if ( gallery.length !== 0 ) {
+      preloadImages(getGalleryAll(), 'srcLarge', galleryPreloadTimeout)
+        .catch(e => console.warn(e));
+    }
+  }, [gallery, history]);
+
   return (
     <StyledApp>
-      <LightgalleryProvider
-        lightgallerySettings={{
-          mode: 'lg-fade',
-          cssEasing : 'cubic-bezier(0.25, 0, 0.25, 1)',
-          download: false,
-          zoom: false,
-          fullScreen: false,
-          thumbWidth: 85,
-          thumbContHeight: 80,
+      <AnimatedSwitch
+        atEnter={{
+          transitionIndex: 0,
+          offset: 2,
+          opacity: 0.7
         }}
-        onAfterOpen={preloadImages}
-        >
-        {gallery.map(gallery => (
-            <StyleImage key={gallery.id}>
-              <StyledImageInner>
-                <LightgalleryItem
-                  src={gallery.srcFullScreen}
-                  thumb={gallery.srcPreview}
-                  group="any"
-                >
-                  <Image
-                    title={gallery.title}
-                    caption={gallery.caption}
-                    src={gallery.src}
-                    srcPreview={gallery.srcPreview}
-                  />
-                </LightgalleryItem>
-              </StyledImageInner>
-            </StyleImage>
+        atLeave={{
+          offset: spring(-10),
+          opacity: spring(0),
+          transitionIndex: 2
+        }}
+        atActive={{
+          offset: spring(0),
+          opacity: spring(1),
+          transitionIndex: 1
+        }}
+        mapStyles={(styles) => ({
+          position: styles.transitionIndex <= 1 ? 'relative' : 'absolute',
+          display: styles.transitionIndex <= 1 ? 'block' : 'none',
+          width: '100%',
+          height: '100%',
+          transform: `translateX(${styles.offset}%)`,
+          opacity: styles.opacity,
+        })}
+      >
+        <Route exact path="/">
+          <Redirect to={'/' + getGalleryTags()[0]}/>
+        </Route>
+        {Object.keys(gallery).map((key) => (
+          <Route key={key} path={'/' + key}>
+            <Gallery images={gallery[key]}/>
+          </Route>
         ))}
-      </LightgalleryProvider>
+      </AnimatedSwitch>
     </StyledApp>
   );
 }

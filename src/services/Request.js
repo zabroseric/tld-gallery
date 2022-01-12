@@ -1,26 +1,30 @@
-import {isWebpSupported} from "react-image-webp/dist/utils";
+import {galleryUrl} from "../constants";
 
-const galleryUrl = 'https://www.totallookdesign.co.nz/wp-json/wp/v2/envira-gallery';
-
-export const getGallery = async() => {
-  const jsonData = await (await fetch(galleryUrl)).json();
-  return jsonData[0].gallery_data.gallery
-    // Add images of different sizes
-    .map((item) => ({
-      ...item,
-      src: item.src,
-      srcPreview: item.link.replace(/\.([a-z]+)$/i, '-75x51.$1'),
-      srcFullScreen: item.link.replace(/\.([a-z]+)$/i, '-1100x700.$1'),
-    }))
-    // // Provide support for webp
-    // .map((item) => (!isWebpSupported() ? item : {
-    //     ...item,
-    //     src: item.src + '.webp',
-    //     srcPreview: item.srcPreview + '.webp',
-    //     srcFullScreen: item.srcFullScreen + '.webp',
-    // }));
+/**
+ * Make a request to the gallery and organises them by tag name.
+ * I.e. tagname => images[]
+ *
+ * @returns {Promise<>}
+ */
+export const getGallery = async () => {
+  const gallery = await (await fetch(galleryUrl)).json();
+  return Object.assign({}, ...getGalleryTags().map(tag => ({
+    [tag]: gallery.filter(galleryItem => galleryItem.tags.includes(tag))
+  })));
 }
 
-export const sleep = async(ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+/**
+ * Sleep for a set duration in milliseconds.
+ *
+ * @param ms
+ * @returns {Promise<unknown>}
+ */
+export const sleep = async (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Get a list of gallery tags.
+ * This in the future can be connected via API.
+ *
+ * @returns {string[]}
+ */
+export const getGalleryTags = () => ['landscape-designs', 'landscaping', 'nightscape-designs'];

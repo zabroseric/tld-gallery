@@ -5,3 +5,6 @@
 .lg-thumb-item {
     border-color: #ccc !important;
 }
+.lg-image {
+    max-width: 80% !important;
+}
