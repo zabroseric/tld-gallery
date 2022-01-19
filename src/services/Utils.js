@@ -12,24 +12,43 @@ export const isDev = () => window.location.hostname === 'localhost';
  * The purpose of this is that the image will be cached in the browser for when the user
  * scrolls downs or changes filter.
  *
- * @param gallerySingle
+ * @param gallery
  * @param size
  * @param timeout
+ * @param chunkSize
  * @returns {Promise<>}
  */
-export const preloadImages = async (gallerySingle, size, timeout = 0) => {
+export const preloadImages = async (gallery, size, timeout = 0, chunkSize) => {
   await sleep(timeout);
-  console.log(`Attempting to load ${gallerySingle.length} images of size ${size}.`);
-
-  if (isDev()) {
-    return;
-  }
   const preloadFetches = [];
-  for (let i = 0; i < gallerySingle.length; i++) {
-    preloadFetches.push(fetch(gallerySingle[i][size]));
+  const galleryChunks = chunkArray(gallery, chunkSize);
+
+  console.log(`A total of ${galleryChunks.length} chunks have been found.`);
+  for (let i = 0; i < galleryChunks.length; i++) {
+    console.log(`Attempting to load ${galleryChunks[i].length} images of size ${size}.`);
+
+    for (let j = 0; j < galleryChunks[i].length; j++) {
+      if (!isDev()) {
+        preloadFetches.push(fetch(galleryChunks[i][j][size]));
+      }
+    }
+
+    if (!isDev()) {
+      await Promise.allSettled(preloadFetches);
+    }
   }
-  return Promise.allSettled(preloadFetches);
+  return new Promise(() => {});
 }
+
+export const chunkArray = (array, size) => array.reduce((resultArray, item, index) => {
+  const chunkIndex = Math.floor(index / size);
+
+  if (!resultArray[chunkIndex]) {
+    resultArray[chunkIndex] = []; // start a new chunk
+  }
+  resultArray[chunkIndex].push(item);
+  return resultArray;
+}, []);
 
 /**
  * Insert a css link into the head of the body to be loaded.

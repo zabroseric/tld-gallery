@@ -3,7 +3,7 @@ import {LightgalleryItem, LightgalleryProvider} from "react-lightgallery";
 import Image from "../components/Image";
 import styled from "styled-components";
 import {preloadImages} from "../services/Utils";
-import {lightboxPreloadTimeout} from "../constants";
+import {lightboxPreloadChunkSize, lightboxPreloadTimeout} from "../constants";
 
 const StyledGallery = styled.div`
   display: flex;
@@ -42,7 +42,7 @@ const Gallery = ({images}) => (
         thumbWidth: 85,
         thumbContHeight: 80,
       }}
-      onAfterOpen={() => preloadImages(images, 'src', lightboxPreloadTimeout)}
+      onAfterOpen={() => preloadImages(images, 'src', lightboxPreloadTimeout, lightboxPreloadChunkSize)}
     >
       {images.map(image => (
         <StyleImage key={image.id}>

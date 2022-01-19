@@ -1,9 +1,20 @@
 import styled from "styled-components";
 import PlusIcon from "./PlusIcon";
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import {LazyLoadImage} from 'react-lazy-load-image-component';
+import {useHistory} from "react-router-dom";
 
 
 const StyledLazyLoadImage = styled(LazyLoadImage)`
+  opacity: 0.9;
+  vertical-align: top;
+  transition: opacity 0.5s;
+  
+  @media (min-width: 992px) {
+    height: 317px;
+  }
+`;
+
+const StyledLoadImage = styled.img`
   opacity: 0.9;
   vertical-align: top;
   transition: opacity 0.5s;
@@ -128,15 +139,21 @@ const TitleWordNormal = styled.span`
 `;
 
 const Image = ({title, caption, src, srcPreview}) => {
+  const history = useHistory();
+
   return (
     <StyledImage>
-      <StyledLazyLoadImage
+      {history.location.pathname === '/' && <StyledLazyLoadImage
         alt={title}
         src={src}
         placeholderSrc={srcPreview}
         width="100%"
-      >
-      </StyledLazyLoadImage>
+      />}
+      {history.location.pathname !== '/' && <StyledLoadImage
+        alt={title}
+        src={src}
+        width="100%"
+      />}
       <ContentContainer>
         <ContentContainerInner>
           <PlusContainer>
