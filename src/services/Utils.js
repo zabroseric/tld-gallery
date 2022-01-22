@@ -40,6 +40,12 @@ export const preloadImages = async (gallery, size, timeout = 0, chunkSize) => {
   return new Promise(() => {});
 }
 
+/**
+ * Split an array into chunks.
+ *
+ * @param array
+ * @param size
+ */
 export const chunkArray = (array, size) => array.reduce((resultArray, item, index) => {
   const chunkIndex = Math.floor(index / size);
 

@@ -21,18 +21,26 @@ function App() {
 
   useEffect(() => {
     getGallery()
-      .then(data => setGallery(data))
+      .then(data => {
+        setGallery(data);
+        document.getElementById('loading').style.display = 'none';
+
+        // Listen to the tabs when clicked.
+        const tabs = document.getElementsByClassName('fusion-tabs')[0].getElementsByClassName('tab-link');
+        Array.from(tabs).forEach((element) => {
+          const tabKey = element.textContent.trim().replace(/\s+/, '-').toLowerCase();
+
+          element.addEventListener('click', (e) => {
+            history.push('/' + tabKey);
+            e.preventDefault();
+          });
+          // Ensure the tab is selected when refreshing the page.
+          if ('/' + tabKey === history.location.pathname) {
+            element.click();
+          }
+        });
+      })
       .catch(e => console.warn(e));
-
-    // Listen to the tabs when clicked.
-    const tabs = document.getElementsByClassName('fusion-tabs')[0].getElementsByClassName('tab-link');
-    Array.from(tabs).forEach((element) => {
-      element.addEventListener('click', (e) => {
-        history.push('/' + e.target.textContent.replace(/\s+/, '-').toLowerCase());
-        e.preventDefault();
-      });
-
-    });
   }, []);
 
   useEffect(() => {
